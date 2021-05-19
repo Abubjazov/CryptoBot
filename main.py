@@ -17,8 +17,6 @@ hello_msg = 'Я простой телеграм бот который знает
             f'\n\nЧто бы увидеть текущий курс интересующей тебя валюты нажми на нужную кнопку. 😃'
 
 
-
-
 def start_command_handler(update: Update, context: CallbackContext):
     """Обработка команд от пользователя"""
     user = update.effective_user  # извлекаем юзернейм
@@ -32,7 +30,7 @@ def start_command_handler(update: Update, context: CallbackContext):
     update.message.reply_text(  # отправляем сообщение и добавляем инлайн клавиатуру
         text=reply_text,
         parse_mode=ParseMode.MARKDOWN,
-        reply_markup=inline_keyboards.get_inline_keyboard()
+        reply_markup=inline_keyboards.get_inline_keyboard_1()
     )
 
 
@@ -48,7 +46,7 @@ def message_handler(update: Update, context: CallbackContext):
 
     update.message.reply_text(  # отправляем сообщение и добавляем инлайн клавиатуру
         text=reply_text,
-        reply_markup=inline_keyboards.get_inline_keyboard()
+        reply_markup=inline_keyboards.get_inline_keyboard_1()
     )
 
 

@@ -7,8 +7,8 @@ from telegram.ext import CallbackContext
 import inline_keyboards
 from coins_api import BittrexClient
 
-
 client = BittrexClient()
+
 
 def get_now_formatted() -> str:
     """Возвращает текущие дату и время строкой"""
@@ -31,14 +31,14 @@ def callback_handler(update: Update, context: CallbackContext):
             inline_keyboards.CALLBACK_BTC: 'USD-BTC',
             inline_keyboards.CALLBACK_LTC: 'USD-LTC',
             inline_keyboards.CALLBACK_ETH: 'USD-ETH'
-        }[callback_data]
+        }[callback_data]  # выбираем пару
 
-        current_price = client.get_last_price(pair=pair)
-        now = get_now_formatted()
+        current_price = client.get_last_price(pair=pair)  # узнаём текущий курс пары
+        now = get_now_formatted()  # узнаём текущие дату и время
         text = f'Пара {pair}\n\n на данный момент торгуется по цене \n\n {current_price} USD \n\n{now}'
 
         update.effective_message.edit_text(  # редактируем текущее сообщение и добавляем инлайн клавиатуру
             text=text,
             parse_mode=ParseMode.MARKDOWN,
-            reply_markup=inline_keyboards.get_inline_keyboard()
+            reply_markup=inline_keyboards.get_inline_keyboard_1()
         )
