@@ -42,20 +42,22 @@ def callback_handler(update: Update, context: CallbackContext):
         text = f'Пара {pair}\n\n на данный момент торгуется по цене \n\n {current_price} USD \n\n{now}'
 
         if callback_data in (inline_keyboards.CALLBACK_BTC, inline_keyboards.CALLBACK_LTC, inline_keyboards.CALLBACK_ETH):
-            update.effective_message.edit_text(  # редактируем текущее сообщение и добавляем инлайн клавиатуру
+            update.effective_message.edit_text(
                 text=text,
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=inline_keyboards.get_inline_keyboard_1()
+                reply_markup=inline_keyboards.get_inline_keyboard_1()  # добавляем инлайн клавиатуру №1
+                                                                       # если была нажата кнопка из её состава
             )
 
         else:
-            update.effective_message.edit_text(  # редактируем текущее сообщение и добавляем инлайн клавиатуру
+            update.effective_message.edit_text(
                 text=text,
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=inline_keyboards.get_inline_keyboard_2()
+                reply_markup=inline_keyboards.get_inline_keyboard_2()  # добавляем инлайн клавиатуру №2
+                                                                       # если была нажата кнопка из её состава
             )
 
-    elif callback_data == inline_keyboards.CALLBACK_MORE:
+    elif callback_data == inline_keyboards.CALLBACK_MORE:  # замена клавиатуры №1 на клавиатуру №2
         text = update.effective_message.text
         update.effective_message.edit_text(
             text=text,
@@ -63,7 +65,7 @@ def callback_handler(update: Update, context: CallbackContext):
             reply_markup=inline_keyboards.get_inline_keyboard_2()
         )
 
-    elif callback_data == inline_keyboards.CALLBACK_BACK:
+    elif callback_data == inline_keyboards.CALLBACK_BACK:  # замена клавиатуры №2 на клавиатуру №1
         text = update.effective_message.text
         update.effective_message.edit_text(
             text=text,
@@ -72,7 +74,7 @@ def callback_handler(update: Update, context: CallbackContext):
         )
 
     else:
-        update.effective_message.edit_text(
+        update.effective_message.edit_text(                 # если вдруг прилетит что то неизвестное
             text='Похоже что то пошло не по плану... 😅\n\nПопробуйте ещё раз',
             parse_mode=ParseMode.MARKDOWN,
             reply_markup=inline_keyboards.get_inline_keyboard_1()

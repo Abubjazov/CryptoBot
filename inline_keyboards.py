@@ -17,12 +17,12 @@ def get_inline_keyboard_1():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text='BTC', callback_data=CALLBACK_BTC),
-                InlineKeyboardButton(text='LTC', callback_data=CALLBACK_LTC),
-                InlineKeyboardButton(text='ETH', callback_data=CALLBACK_ETH)
+                InlineKeyboardButton(text='BTC 💲', callback_data=CALLBACK_BTC),
+                InlineKeyboardButton(text='LTC 💲', callback_data=CALLBACK_LTC),
+                InlineKeyboardButton(text='ETH 💲', callback_data=CALLBACK_ETH)
             ],
             [
-                InlineKeyboardButton(text='Ещё', callback_data=CALLBACK_MORE)
+                InlineKeyboardButton(text='Ещё ➡️', callback_data=CALLBACK_MORE)
             ]
         ]
     )
@@ -33,12 +33,12 @@ def get_inline_keyboard_2():
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text='DOGE', callback_data=CALLBACK_DOGE),
-                InlineKeyboardButton(text='ADA', callback_data=CALLBACK_ADA),
-                InlineKeyboardButton(text='BCH', callback_data=CALLBACK_BCH)
+                InlineKeyboardButton(text='DOGE 💲', callback_data=CALLBACK_DOGE),
+                InlineKeyboardButton(text='ADA 💲', callback_data=CALLBACK_ADA),
+                InlineKeyboardButton(text='BCH 💲', callback_data=CALLBACK_BCH)
             ],
             [
-                InlineKeyboardButton(text='Назад', callback_data=CALLBACK_BACK)
+                InlineKeyboardButton(text='Назад ⬅️', callback_data=CALLBACK_BACK)
             ]
         ]
     )
