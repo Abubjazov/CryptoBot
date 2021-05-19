@@ -10,6 +10,10 @@ from telegram.utils.request import Request
 from bot_config import TOKEN
 
 
+hello_msg = 'Я простой телеграм бот который знает\nкурсы основных криптовалют на данный момент.' \
+            f'\n\nЧто бы увидеть текущий курс интересующей тебя валюты нажми на нужную кнопку. 😃'
+
+
 def start_command_handler(update: Update, context: CallbackContext):
     """Обработка команд от пользователя"""
     user = update.effective_user  # извлекаем юзернейм
@@ -18,7 +22,7 @@ def start_command_handler(update: Update, context: CallbackContext):
     else:
         name = 'Аноним'
 
-    reply_text = f'Привет, {name}!\n\n'  # формируем сообщение
+    reply_text = f'Привет, {name}!\n\n' + hello_msg  # формируем сообщение
 
     update.message.reply_text(  # отправляем сообщение
         text=reply_text
@@ -33,7 +37,7 @@ def message_handler(update: Update, context: CallbackContext):
     else:
         name = 'Аноним'
 
-    reply_text = f'Привет, {name}!\n\n'  # формируем сообщение
+    reply_text = f'Привет, {name}!\n\n' + hello_msg  # формируем сообщение
 
     update.message.reply_text(  # отправляем сообщение
         text=reply_text
