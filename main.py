@@ -1,8 +1,9 @@
 """Сервер Telegram бота, запускаемый непосредственно"""
 import datetime
-
 import pytz
-from telegram import Bot, Update, InlineKeyboardMarkup, InlineKeyboardButton, ParseMode
+import inline_keyboards
+
+from telegram import Bot, Update, ParseMode
 
 from telegram.ext import Updater, CallbackContext, CallbackQueryHandler
 from telegram.ext import MessageHandler
@@ -16,26 +17,7 @@ from coins_api import BittrexClient
 hello_msg = 'Я простой телеграм бот который знает\nкурсы основных криптовалют на данный момент.' \
             f'\n\nЧто бы увидеть текущий курс интересующей тебя валюты нажми на нужную кнопку. 😃'
 
-"""Инлайн кнопки"""
-CALLBACK_BTC = 'BTC'
-CALLBACK_LTC = 'LTC'
-CALLBACK_ETH = 'ETH'
-
-
 client = BittrexClient()
-
-
-def get_inline_keyboard() -> InlineKeyboardMarkup:
-    """Инлайн клавиатура"""
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text='BTC', callback_data=CALLBACK_BTC),
-                InlineKeyboardButton(text='LTC', callback_data=CALLBACK_LTC),
-                InlineKeyboardButton(text='ETH', callback_data=CALLBACK_ETH)
-            ]
-        ]
-    )
 
 
 def get_now_formatted() -> str:
@@ -54,11 +36,11 @@ def callback_handler(update: Update, context: CallbackContext):
     """Обработка Callback'ов"""
     callback_data = update.callback_query.data
 
-    if callback_data in (CALLBACK_BTC, CALLBACK_LTC, CALLBACK_ETH):
+    if callback_data in (inline_keyboards.CALLBACK_BTC, inline_keyboards.CALLBACK_LTC, inline_keyboards.CALLBACK_ETH):
         pair = {
-            CALLBACK_BTC: 'USD-BTC',
-            CALLBACK_LTC: 'USD-LTC',
-            CALLBACK_ETH: 'USD-ETH'
+            inline_keyboards.CALLBACK_BTC: 'USD-BTC',
+            inline_keyboards.CALLBACK_LTC: 'USD-LTC',
+            inline_keyboards.CALLBACK_ETH: 'USD-ETH'
         }[callback_data]
 
         current_price = client.get_last_price(pair=pair)
@@ -68,7 +50,7 @@ def callback_handler(update: Update, context: CallbackContext):
         update.effective_message.edit_text(  # редактируем текущее сообщение и добавляем инлайн клавиатуру
             text=text,
             parse_mode=ParseMode.MARKDOWN,
-            reply_markup=get_inline_keyboard()
+            reply_markup=inline_keyboards.get_inline_keyboard()
         )
 
 
@@ -85,7 +67,7 @@ def start_command_handler(update: Update, context: CallbackContext):
     update.message.reply_text(  # отправляем сообщение и добавляем инлайн клавиатуру
         text=reply_text,
         parse_mode=ParseMode.MARKDOWN,
-        reply_markup=get_inline_keyboard()
+        reply_markup=inline_keyboards.get_inline_keyboard()
     )
 
 
@@ -101,7 +83,7 @@ def message_handler(update: Update, context: CallbackContext):
 
     update.message.reply_text(  # отправляем сообщение и добавляем инлайн клавиатуру
         text=reply_text,
-        reply_markup=get_inline_keyboard()
+        reply_markup=inline_keyboards.get_inline_keyboard()
     )
 
 
