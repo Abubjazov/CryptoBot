@@ -11,6 +11,7 @@ from telegram.ext import Filters
 from telegram.utils.request import Request
 
 from bot_config import TOKEN
+from coins_api import BittrexClient
 
 hello_msg = 'Я простой телеграм бот который знает\nкурсы основных криптовалют на данный момент.' \
             f'\n\nЧто бы увидеть текущий курс интересующей тебя валюты нажми на нужную кнопку. 😃'
@@ -19,6 +20,9 @@ hello_msg = 'Я простой телеграм бот который знает
 CALLBACK_BTC = 'BTC'
 CALLBACK_LTC = 'LTC'
 CALLBACK_ETH = 'ETH'
+
+
+client = BittrexClient()
 
 
 def get_inline_keyboard() -> InlineKeyboardMarkup:
@@ -48,12 +52,24 @@ def get_now_datetime() -> datetime.datetime:
 
 def callback_handler(update: Update, context: CallbackContext):
     """Обработка Callback'ов"""
-    callback_data = str(update.callback_query.data)
-    update.effective_message.edit_text(  # редактируем текущее сообщение и добавляем инлайн клавиатуру
-        text=get_now_formatted() + '\n' + callback_data,
-        parse_mode=ParseMode.MARKDOWN,
-        reply_markup=get_inline_keyboard()
-    )
+    callback_data = update.callback_query.data
+
+    if callback_data in (CALLBACK_BTC, CALLBACK_LTC, CALLBACK_ETH):
+        pair = {
+            CALLBACK_BTC: 'USD-BTC',
+            CALLBACK_LTC: 'USD-LTC',
+            CALLBACK_ETH: 'USD-ETH'
+        }[callback_data]
+
+        current_price = client.get_last_price(pair=pair)
+        now = get_now_formatted()
+        text = f'Пара {pair}\n\n на данный момент торгуется по цене \n\n {current_price} USD \n\n{now}'
+
+        update.effective_message.edit_text(  # редактируем текущее сообщение и добавляем инлайн клавиатуру
+            text=text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=get_inline_keyboard()
+        )
 
 
 def start_command_handler(update: Update, context: CallbackContext):
