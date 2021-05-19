@@ -1,7 +1,10 @@
 """Сервер Telegram бота, запускаемый непосредственно"""
-from telegram import Bot, Update, InlineKeyboardMarkup, InlineKeyboardButton
+import datetime
 
-from telegram.ext import Updater, CallbackContext
+import pytz
+from telegram import Bot, Update, InlineKeyboardMarkup, InlineKeyboardButton, ParseMode
+
+from telegram.ext import Updater, CallbackContext, CallbackQueryHandler
 from telegram.ext import MessageHandler
 from telegram.ext import CommandHandler
 from telegram.ext import Filters
@@ -31,6 +34,28 @@ def get_inline_keyboard() -> InlineKeyboardMarkup:
     )
 
 
+def get_now_formatted() -> str:
+    """Возвращает текущие дату и время строкой"""
+    return get_now_datetime().strftime("%Y-%m-%d %H:%M:%S")
+
+
+def get_now_datetime() -> datetime.datetime:
+    """Возвращает текущий datetime с учётом времненной зоны Мск."""
+    tz = pytz.timezone("Europe/Moscow")
+    now = datetime.datetime.now(tz)
+    return now
+
+
+def callback_handler(update: Update, context: CallbackContext):
+    """Обработка Callback'ов"""
+    callback_data = str(update.callback_query.data)
+    update.effective_message.edit_text(  # редактируем текущее сообщение и добавляем инлайн клавиатуру
+        text=get_now_formatted() + '\n' + callback_data,
+        parse_mode=ParseMode.MARKDOWN,
+        reply_markup=get_inline_keyboard()
+    )
+
+
 def start_command_handler(update: Update, context: CallbackContext):
     """Обработка команд от пользователя"""
     user = update.effective_user  # извлекаем юзернейм
@@ -41,8 +66,9 @@ def start_command_handler(update: Update, context: CallbackContext):
 
     reply_text = f'Привет, {name}!\n\n' + hello_msg  # формируем сообщение
 
-    update.message.reply_text(  # отправляем сообщение
+    update.message.reply_text(  # отправляем сообщение и добавляем инлайн клавиатуру
         text=reply_text,
+        parse_mode=ParseMode.MARKDOWN,
         reply_markup=get_inline_keyboard()
     )
 
@@ -57,7 +83,7 @@ def message_handler(update: Update, context: CallbackContext):
 
     reply_text = f'Привет, {name}!\n\n' + hello_msg  # формируем сообщение
 
-    update.message.reply_text(  # отправляем сообщение
+    update.message.reply_text(  # отправляем сообщение и добавляем инлайн клавиатуру
         text=reply_text,
         reply_markup=get_inline_keyboard()
     )
@@ -83,15 +109,16 @@ def main():
         use_context=True
     )
 
-    """Проверка корректного подключения к Telegram API"""
+    """Проверяем корректность подключения к Telegram API"""
     info = bot.get_me()
     print(info)
 
-    """Обработчики команд и сообщений от пользователя"""
+    """Регистрируем обработчики команд и сообщений от пользователя"""
     updater.dispatcher.add_handler(CommandHandler('start', start_command_handler))
     updater.dispatcher.add_handler(MessageHandler(Filters.all, message_handler))
+    updater.dispatcher.add_handler(CallbackQueryHandler(callback_handler))
 
-    """Запуск обработки входящих сообщений боту"""
+    """Запускаем обработку входящих сообщений боту"""
     updater.start_polling()
     updater.idle()
 
