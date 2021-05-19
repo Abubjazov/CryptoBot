@@ -1,2 +1,3 @@
 .idea/
+__pycache__/
 bot_config.py
