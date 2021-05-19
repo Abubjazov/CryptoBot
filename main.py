@@ -1,5 +1,5 @@
 """Сервер Telegram бота, запускаемый непосредственно"""
-from telegram import Bot, Update
+from telegram import Bot, Update, InlineKeyboardMarkup, InlineKeyboardButton
 
 from telegram.ext import Updater, CallbackContext
 from telegram.ext import MessageHandler
@@ -9,9 +9,26 @@ from telegram.utils.request import Request
 
 from bot_config import TOKEN
 
-
 hello_msg = 'Я простой телеграм бот который знает\nкурсы основных криптовалют на данный момент.' \
             f'\n\nЧто бы увидеть текущий курс интересующей тебя валюты нажми на нужную кнопку. 😃'
+
+"""Инлайн кнопки"""
+CALLBACK_BTC = 'BTC'
+CALLBACK_LTC = 'LTC'
+CALLBACK_ETH = 'ETH'
+
+
+def get_inline_keyboard() -> InlineKeyboardMarkup:
+    """Инлайн клавиатура"""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text='BTC', callback_data=CALLBACK_BTC),
+                InlineKeyboardButton(text='LTC', callback_data=CALLBACK_LTC),
+                InlineKeyboardButton(text='ETH', callback_data=CALLBACK_ETH)
+            ]
+        ]
+    )
 
 
 def start_command_handler(update: Update, context: CallbackContext):
@@ -25,7 +42,8 @@ def start_command_handler(update: Update, context: CallbackContext):
     reply_text = f'Привет, {name}!\n\n' + hello_msg  # формируем сообщение
 
     update.message.reply_text(  # отправляем сообщение
-        text=reply_text
+        text=reply_text,
+        reply_markup=get_inline_keyboard()
     )
 
 
@@ -40,7 +58,8 @@ def message_handler(update: Update, context: CallbackContext):
     reply_text = f'Привет, {name}!\n\n' + hello_msg  # формируем сообщение
 
     update.message.reply_text(  # отправляем сообщение
-        text=reply_text
+        text=reply_text,
+        reply_markup=get_inline_keyboard()
     )
 
 
