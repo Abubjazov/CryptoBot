@@ -55,8 +55,8 @@ def main():
     """Создаём и настраиваем бота"""
     req = Request(
         con_pool_size=8,
-        connect_timeout=0.5,
-        read_timeout=1.0
+        connect_timeout=2,
+        read_timeout=3.0
     )
 
     bot = Bot(
